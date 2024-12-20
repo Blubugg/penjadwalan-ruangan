@@ -20,7 +20,7 @@
       cursor: pointer;
     }
     .time-slot.selected {
-      background-color: #4caf50;
+      background-color: #3f83f8;
       color: white;
     }
   </style>
@@ -63,6 +63,9 @@
                 <option value="1">1 jam</option>
                 <option value="2">2 jam</option>
                 <option value="3">3 jam</option>
+                <option value="4">4 jam</option>
+                <option value="5">5 jam</option>
+                <option value="6">6 jam</option>
               </select>
             </div>
           </div>
@@ -146,7 +149,7 @@
 
       function generateTimeSlots(duration) {
         const startHour = 8;
-        const endHour = 18; // Example working hours: 8 AM to 6 PM
+        const endHour = 16; // Example working hours: 8 AM to 6 PM
         const slots = [];
 
         for (let hour = startHour; hour + duration <= endHour; hour++) {
@@ -195,16 +198,15 @@
       const initialView = calendarEl.getAttribute('data-initial-view') || 'dayGridMonth';
       
       const jadwalSlot = @json($jadwals).map(jadwal => {
-        const waktuMulai = jadwal.waktu_kegiatan.split(' - ')[0]; // Extract the start time
-        const waktuSelesai = jadwal.waktu_kegiatan.split(' - ')[1]; // Extract the start time
+        const [waktuMulai, waktuSelesai] = jadwal.waktu_kegiatan.split(' - '); // Split the start time and end time
         return {
           title: jadwal.nama_kegiatan,
           start: `${jadwal.tanggal}T${waktuMulai}`, // Combine date and time
           end: `${jadwal.tanggal}T${waktuSelesai}`, // Combine date and time
-          color: jadwal.ruangan ? jadwal.ruangan.warna : 'grey'
+          color: jadwal.ruangan ? jadwal.ruangan.warna : 'grey',
+          allDay: false
         };
       });
-      console.log(jadwalSlot);
           
       const calendar = new FullCalendar.Calendar(calendarEl, {
         locale: 'id',
@@ -240,7 +242,9 @@
             }
           }
         },
-        events: jadwalSlot
+        events: jadwalSlot,
+        eventOverlap: false,
+        slotEventOverlap: false
       });
       calendar.render();
     

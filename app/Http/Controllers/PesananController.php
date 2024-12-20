@@ -30,13 +30,13 @@ class PesananController extends Controller
         $jadwals->status = 'Disetujui';
         $jadwals->save();
 
-        // Kirim notifikasi ke user
-        $notificationData = [
-            'type' => 'admin-response',
-            'message' => 'Jadwal Anda telah disetujui.',
-            'count' => Jadwal::where('user_id', $jadwals->user_id)->whereIn('status', ['Disetujui', 'Ditolak'])->count(),
-        ];
-        event(new JadwalUpdated($notificationData));
+        // // Kirim notifikasi ke user
+        // $notificationData = [
+        //     'type' => 'admin-response',
+        //     'message' => 'Jadwal Anda telah disetujui.',
+        //     'count' => Jadwal::where('user_id', $jadwals->user_id)->whereIn('status', ['Disetujui', 'Ditolak'])->count(),
+        // ];
+        // event(new JadwalUpdated($notificationData));
 
         return redirect()->route('admin.pesanans')->with('success', 'Jadwal berhasil disetujui.');
     }
@@ -45,13 +45,13 @@ class PesananController extends Controller
         $jadwals->status = 'Ditolak';
         $jadwals->save();
 
-        // Kirim notifikasi ke user
-        $notificationData = [
-            'type' => 'admin-response',
-            'message' => 'Jadwal Anda telah ditolak.',
-            'count' => Jadwal::where('user_id', $jadwals->user_id)->whereIn('status', ['Disetujui', 'Ditolak'])->count(),
-        ];
-        event(new JadwalUpdated($notificationData));
+        // // Kirim notifikasi ke user
+        // $notificationData = [
+        //     'type' => 'admin-response',
+        //     'message' => 'Jadwal Anda telah ditolak.',
+        //     'count' => Jadwal::where('user_id', $jadwals->user_id)->whereIn('status', ['Disetujui', 'Ditolak'])->count(),
+        // ];
+        // event(new JadwalUpdated($notificationData));
 
         return redirect()->route('admin.pesanans')->with('success', 'Jadwal berhasil ditolak.');
     }

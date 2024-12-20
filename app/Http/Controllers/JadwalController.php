@@ -55,19 +55,6 @@ class JadwalController extends Controller {
 
         $jadwals->save();
 
-        // Kirim notifikasi ke admin
-        $notificationData = [
-            'type' => 'user-submission',
-            'message' => 'Ada jadwal baru yang diajukan.',
-            'count' => Jadwal::where('status', 'Menunggu')->count(),
-        ];
-        event(new JadwalUpdated($notificationData));
-
-        // $admins = User::role('Admin')->get();
-        // foreach ($admins as $admin) {
-        //     $admin->notify(new PesananDiajukan($jadwals));
-        // }
-
         return redirect()->route('user.jadwals')->with('success', 'Jadwal berhasil dibuat.');
     }
 

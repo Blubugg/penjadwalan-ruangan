@@ -43,16 +43,15 @@
       const initialView = calendarEl.getAttribute('data-initial-view') || 'dayGridMonth';
       
       const jadwalSlot = @json($jadwals).map(jadwal => {
-              const waktuMulai = jadwal.waktu_kegiatan.split(' - ')[0]; // Extract the start time
-              const waktuSelesai = jadwal.waktu_kegiatan.split(' - ')[1]; // Extract the start time
-              return {
-                title: jadwal.nama_kegiatan,
-                start: `${jadwal.tanggal}T${waktuMulai}`, // Combine date and time
-                end: `${jadwal.tanggal}T${waktuSelesai}`, // Combine date and time
-                color: jadwal.ruangan ? jadwal.ruangan.warna : 'grey'
-              };
-            });
-      console.log(jadwalSlot);
+        const [waktuMulai, waktuSelesai] = jadwal.waktu_kegiatan.split(' - '); // Split the start time and end time
+        return {
+          title: jadwal.nama_kegiatan,
+          start: `${jadwal.tanggal}T${waktuMulai}`, // Combine date and time
+          end: `${jadwal.tanggal}T${waktuSelesai}`, // Combine date and time
+          color: jadwal.ruangan ? jadwal.ruangan.warna : 'grey',
+          allDay: false
+        };
+      });
           
       const calendar = new FullCalendar.Calendar(calendarEl, {
         locale: 'id',
@@ -88,7 +87,9 @@
             }
           }
         },
-        events: jadwalSlot
+        events: jadwalSlot,
+        eventOverlap: false,
+        slotEventOverlap: false
       });
       calendar.render();
     

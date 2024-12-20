@@ -182,6 +182,11 @@
           modal.classList.remove('hidden');
         });
       });
+      
+        // Close Modal
+        cancelModalBtn.addEventListener('click', () => {
+          modal.classList.add('hidden');
+        });
 
       // Open Modal for Delete Confirmation
       document.querySelectorAll('.delete-btn').forEach((btn) => {
@@ -196,11 +201,6 @@
       // Close Delete Modal
       cancelDeleteBtn.addEventListener('click', () => {
         deleteModal.classList.add('hidden');
-      });
-    
-      // Close Modal
-      cancelModalBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
       });
     });
   </script>
