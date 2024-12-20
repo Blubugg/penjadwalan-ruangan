@@ -1,0 +1,63 @@
+aside {
+  background-color:black;
+  position: fixed;
+  height: 100vh;
+  transition: width 0.3s ease-in-out;
+}
+
+main {
+  flex-grow: 1;
+  margin-left: 100px;
+  height: 100vh;
+  overflow: hidden;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  margin: 8px 12px;
+}
+
+.fc .fc-toolbar-title {
+  font-weight: bold;
+}
+
+.fc .fc-button-primary {
+  background-color: black;
+  border-color: white;
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: black;
+  border-color: white;
+}
+
+.fc .fc-daygrid-day-top {
+  justify-content: center;
+}
+
+.shadow-side {
+  --tw-shadow: 0 0px 10px -2px rgba(0, 0, 0, 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+/* Tambahkan transisi untuk animasi yang halus */
+#page-content {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+#sidebar {
+  display: block;
+  width: 100px;
+  z-index: 1;
+}
+
+#default-sidebar {
+  width: 250px;
+  z-index: 11;
+  display: none;
+}
