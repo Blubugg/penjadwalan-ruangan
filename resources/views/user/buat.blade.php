@@ -48,7 +48,7 @@
                     <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                   </svg>
                 </div>
-                <input id="datepicker-autohide" datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" name="tanggal" type="text" 
+                <input id="dateValues" datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" name="tanggal" type="text" 
                        class="bg-white border border-gray-700 text-gray-700 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 py-2 px-3" 
                        placeholder="Pilih Tanggal" required>
               </div>
@@ -122,6 +122,9 @@
       const timeValuesElement = document.getElementById('timeValues');
       const roomButtons = document.querySelectorAll('#roomSlots button');
       const roomValuesElement = document.getElementById('roomValues');
+      const dateInputElement = document.getElementById('dateValues');
+  
+      updateTimeSlots();
 
       roomButtons.forEach(button => {
         button.addEventListener('click', function () {
@@ -175,6 +178,7 @@
             document.querySelectorAll('.time-slot').forEach(btn => btn.classList.remove('selected'));
             button.classList.add('selected');
             timeValuesElement.value = button.textContent;
+            updateRoomAvailability(dateInputElement.value, timeValuesElement.value);
           });
           timeSlotsContainer.appendChild(button);
         });
@@ -182,9 +186,34 @@
       
       durationSelect.addEventListener('change', updateTimeSlots);
       
-      // Initialize with default duration
-      updateTimeSlots();
-    });
+
+
+    function updateRoomAvailability(selectedDate = dateInputElement.value, selectedTime = timeValuesElement.value) {
+
+      if (selectedDate && selectedTime) {
+            fetch(`/check-room-availability?tanggal=${selectedDate}&waktu=${selectedTime}`)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                    roomButtons.forEach(button => {
+                        const roomId = button.getAttribute('data-id');
+                        const room = data.find(r => r.id === parseInt(roomId));
+                        if (room && !room.isAvailable) {
+                            button.disabled = true;
+                            button.classList.add('opacity-50', 'cursor-not-allowed');
+                        } else {
+                            button.disabled = false;
+                            button.classList.remove('opacity-50', 'cursor-not-allowed');
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching room availability:', error));
+        }
+      }
+
+    // Add event listeners to inputs
+    dateInputElement.addEventListener('change', updateRoomAvailability);
+  });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>

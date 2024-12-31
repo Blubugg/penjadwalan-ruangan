@@ -38,5 +38,8 @@ Route::prefix('admin')->middleware('auth', 'Admin')->group(function () {
   Route::post('/pesanan/reject/{jadwals}', [PesananController::class, 'reject'])->name('admin.pesanans.reject');
 });
 
+Route::get('/check-room-availability', [JadwalController::class, 'checkRoomAvailability']);
+
+
 
 require __DIR__.'/auth.php';
