@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use App\Events\JadwalUpdated;
 use App\Events\NotifikasiPesananBaru;
 use App\Events\NotifikasiStatusDiperbarui;
+use App\Notifications\AdminActionNotification;
+
+use App\Exports\JadwalExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PesananController extends Controller
 {
@@ -20,7 +24,7 @@ class PesananController extends Controller
     }
      
     public function adminIndex() {
-        $jadwals = Jadwal::with('ruangan')
+        $jadwals = Jadwal::with(['user', 'ruangan'])
                         ->orderBy('created_at', 'desc')
                         ->get(); // Fetch all schedules for admin
         return view('admin.pesanan', compact('jadwals'));
@@ -30,29 +34,37 @@ class PesananController extends Controller
         $jadwals->status = 'Disetujui';
         $jadwals->save();
 
-        // // Kirim notifikasi ke user
-        // $notificationData = [
-        //     'type' => 'admin-response',
-        //     'message' => 'Jadwal Anda telah disetujui.',
-        //     'count' => Jadwal::where('user_id', $jadwals->user_id)->whereIn('status', ['Disetujui', 'Ditolak'])->count(),
-        // ];
-        // event(new JadwalUpdated($notificationData));
+        $user = $jadwals->user;
+        $user->notify(new AdminActionNotification('Disetujui', $jadwals));
 
         return redirect()->route('admin.pesanans')->with('success', 'Jadwal berhasil disetujui.');
     }
 
-    public function reject(Jadwal $jadwals) {
+    public function reject(Request $request, Jadwal $jadwals) {
+        $request->validate([
+            'alasan' => 'required|string|max:255'
+        ]);
+        
         $jadwals->status = 'Ditolak';
+        $jadwals->alasan_penolakan = $request->alasan;
         $jadwals->save();
 
-        // // Kirim notifikasi ke user
-        // $notificationData = [
-        //     'type' => 'admin-response',
-        //     'message' => 'Jadwal Anda telah ditolak.',
-        //     'count' => Jadwal::where('user_id', $jadwals->user_id)->whereIn('status', ['Disetujui', 'Ditolak'])->count(),
-        // ];
-        // event(new JadwalUpdated($notificationData));
+        $user = $jadwals->user;
+        $user->notify(new AdminActionNotification('Ditolak', $jadwals));
 
         return redirect()->route('admin.pesanans')->with('success', 'Jadwal berhasil ditolak.');
+    }
+
+    public function export(Request $request){
+        $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from'
+        ]);
+
+        $from = $request->input('from');
+        $to = $request->input('to');
+
+        $filename = 'Laporan_Pesanan_Ruangan_' . date('dMy', strtotime($from)) . '_' . date('dMy', strtotime($to)) . '.xlsx';
+        return Excel::download(new JadwalExport($from, $to), $filename);
     }
 }

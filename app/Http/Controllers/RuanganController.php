@@ -27,6 +27,7 @@ class RuanganController extends Controller {
             'nama' => 'required|string|max:255',
             'lantai' => 'required|integer',
             'kapasitas' => 'required|integer',
+            'fasilitas' => 'required|string|max:255',
             'warna' => 'required|string|max:7',
         ]);
 
@@ -42,6 +43,7 @@ class RuanganController extends Controller {
             'nama' => 'required|string|max:255',
             'lantai' => 'required|integer',
             'kapasitas' => 'required|integer',
+            'fasilitas' => 'required|string|max:255',
             'warna' => 'required|string',
         ]);
 

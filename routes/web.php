@@ -3,18 +3,23 @@
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/dashboard', function () {
-  return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//   return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/', function () {
+  return view('welcome');
+})->name('welcome');
 
 Route::get('/jadwal', [JadwalController::class, 'index'])->name('guest.jadwals');
 Route::get('/ruangan', [RuanganController::class, 'index'])->name('guest.ruangans');
@@ -36,6 +41,10 @@ Route::prefix('admin')->middleware('auth', 'Admin')->group(function () {
   Route::get('/pesanan', [PesananController::class, 'adminIndex'])->name('admin.pesanans');
   Route::post('/pesanan/approve/{jadwals}', [PesananController::class, 'approve'])->name('admin.pesanans.approve');
   Route::post('/pesanan/reject/{jadwals}', [PesananController::class, 'reject'])->name('admin.pesanans.reject');
+  Route::get('/pesanan/export', [PesananController::class, 'export'])->name('admin.pesanans.export');
+  Route::get('/akun', [UserController::class, 'adminIndex'])->name('admin.users');
+  Route::post('/akun/approve/{users}', [UserController::class, 'approve'])->name('admin.users.approve');
+  Route::post('/akun/reject/{users}', [UserController::class, 'reject'])->name('admin.users.reject');
 });
 
 Route::get('/check-room-availability', [JadwalController::class, 'checkRoomAvailability']);

@@ -19,7 +19,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'pageTitle' => 'Register - Penjadwalan',
+        ]);
     }
 
     /**
@@ -27,24 +29,27 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
+    public function store(Request $request): RedirectResponse{
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role' => 'User',
             'password' => Hash::make($request->password),
+            'status' => 'Menunggu',
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Do not log the user in automatically
+        // Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect to login page after successful registration
+        return redirect()->route('login')->with('status', 'Registration successful! Please login.');
     }
 }

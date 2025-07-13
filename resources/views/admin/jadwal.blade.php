@@ -8,87 +8,93 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Styles -->
+  <!-- Boxicons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <!-- Styles / Scripts -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   
   <title>Jadwal</title>
-  
+
 </head>
-<body>
-  <div id="page-content" class="flex">
-    <!-- Sidebar Opened -->
-    <x-sidebar.admin.sidebar-jadwal/>
-    
-    <!-- Sidebar Closed -->
-    <aside id="sidebar">
-      <div id="menu" class="flex py-[13px] items-center justify-center">
-        <button id="menuButton" onclick="toggleSidebar()">
-          <img src="{{ asset('icon/menu.svg') }}" alt="navIcon" class="w-[32px] h-[32px]">
-        </button>
-      </div>
-      <hr class="border-0 h-[1px] w-[100px] bg-white">
-      <div class="flex p-[13px] items-center justify-center">
-        <a href="/user/pesanan" class="p-[19px] border border-white rounded-lg">
-          <img src="{{ asset('icon/order.svg') }}" alt="navIcon" class="w-[32px] h-[32px]">
-        </a>
-        {{-- <div class="absolute flex text-[8px] items-center justify-center w-8 h-8 bg-red-500 text-white font-bold rounded-full top-[65px] right-[7px]">
-            <span class="text-[16px]">1</span>
-        </div> --}}
-      </div>
-    </aside>
-    
-    <!-- Main Content -->
-    <main id="calendar" class="flex"></main>
-  </div>
-  
+<body class="relative min-h-screen w-full overflow-hidden">
+  <x-sidebar.admin.sidebar-jadwal/>
+
+  <main class="home_content">
+    <div id="calendar" class="flex-grow h-screen overflow-hidden overflow-y-auto"></div>
+  </main>
+
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   <script>
+    window.menuIconPath = "{{ asset('icon/menu.svg') }}";
+    let sidebar = document.querySelector(".sidebar");
+    
     document.addEventListener('DOMContentLoaded', function () {
       const calendarEl = document.getElementById('calendar');
-      
-      // Get the initial view from the data attribute
       const initialView = calendarEl.getAttribute('data-initial-view') || 'dayGridMonth';
-      
+    
+      function formatJam(jamString) {
+        const [jam, menit] = jamString.trim().split(':');
+        return `${jam.padStart(2, '0')}:${(menit || '00').padStart(2, '0')}`;
+      }
+
       const jadwalSlot = @json($jadwals).map(jadwal => {
-        const [waktuMulai, waktuSelesai] = jadwal.waktu_kegiatan.split(' - '); // Split the start time and end time
+        const waktuMulai = formatJam(jadwal.waktu_kegiatan.split(' - ')[0]);
+        const waktuSelesai = formatJam(jadwal.waktu_kegiatan.split(' - ')[1]);
+
         return {
           title: jadwal.nama_kegiatan,
-          start: `${jadwal.tanggal}T${waktuMulai}`, // Combine date and time
-          end: `${jadwal.tanggal}T${waktuSelesai}`, // Combine date and time
-          color: jadwal.ruangan ? jadwal.ruangan.warna : 'grey',
-          allDay: false
+          start: `${jadwal.tanggal}T${waktuMulai}`,
+          end: `${jadwal.tanggal}T${waktuSelesai}`,
+          color: jadwal.ruangan ? jadwal.ruangan.warna : 'gray',
+          extendedProps: {
+            ruangan: jadwal.ruangan ? jadwal.ruangan.nama : 'Tanpa Ruangan',
+            waktuMulai: waktuMulai,
+            waktuSelesai: waktuSelesai,
+            pemesan: jadwal.user ? jadwal.user.name : 'Tidak Diketahui',
+            peserta: jadwal.jumlah_peserta
+          }
         };
       });
-          
+    
       const calendar = new FullCalendar.Calendar(calendarEl, {
         locale: 'id',
         initialView: initialView,
+        allDaySlot: false,
+        nowIndicator: true,
         headerToolbar: {
-          left: 'prev,next Today',
+          left: 'menuButton prev,next Today',
           center: 'title',
           right: 'Month,Week,Day'
         },
         customButtons: {
-          Today: {
-            text: 'Hari Ini', // Custom text for the Today button
+          menuButton: {
+            text: '',
             click: function () {
-              calendar.today(); // Navigate to today's date
+              sidebar.classList.toggle("active");
+              setTimeout(() => calendar.render(), 500);
             }
           },
-          Month : {
+          Today: {
+            text: 'Hari Ini',
+            click: function () {
+              calendar.today();
+            }
+          },
+          Month: {
             text: 'Bulan',
             click: function () {
               calendar.changeView('dayGridMonth');
             }
           },
-          Week : {
+          Week: {
             text: 'Minggu',
             click: function () {
               calendar.changeView('timeGridWeek');
             }
           },
-          Day : {
+          Day: {
             text: 'Hari',
             click: function () {
               calendar.changeView('timeGridDay');
@@ -96,39 +102,63 @@
           }
         },
         events: jadwalSlot,
-        eventOverlap: false,
-        slotEventOverlap: false
+        eventContent: function (arg) {
+          const { event, view } = arg;
+          const waktuMulai = event.extendedProps.waktuMulai;
+          const waktuSelesai = event.extendedProps.waktuSelesai;
+          const namaKegiatan = event.title;
+          const namaRuangan = event.extendedProps.ruangan;
+          const backgroundColor = event.backgroundColor || event.color || 'gray';
+          
+          const namaPemesan = event.extendedProps.pemesan;
+          const jumlahPeserta = event.extendedProps.peserta;
+          const tooltipText = `${namaKegiatan}
+          ${waktuMulai} - ${waktuSelesai}
+          ${namaRuangan}
+          Oleh: ${namaPemesan}
+          Peserta: ${jumlahPeserta}`;
+        
+          if (view.type === 'dayGridMonth') {
+            const containerEl = document.createElement('div');
+            containerEl.className = 'fc-event-custom';
+            containerEl.style.backgroundColor = backgroundColor;
+            containerEl.title = tooltipText;
+            
+            containerEl.innerHTML = `
+              <div><strong>${waktuMulai} - ${waktuSelesai}</strong></div>
+              <div>${namaKegiatan}</div>
+              <div><em>${namaRuangan}</em></div>
+              <div class="text-xs">Oleh: ${namaPemesan}</div>
+              <div class="text-xs">Peserta: ${jumlahPeserta}</div>
+            `;
+            
+            return { domNodes: [containerEl] };
+          } else {
+            const innerHTML = `
+              <div title="${tooltipText.replace(/\n/g, '&#10;')}">
+                <strong>${waktuMulai} - ${waktuSelesai}</strong><br>
+                ${namaKegiatan}<br>
+                <em>${namaRuangan}</em><br>
+                <small>Oleh: ${namaPemesan}</small><br>
+                <small>Peserta: ${jumlahPeserta}</small>
+              </div>
+            `;
+            return { html: innerHTML };
+          }
+        }
       });
+    
       calendar.render();
     
-      window.calendar = calendar;
-      
-    });
-    
-    let isSidebar1Active = true;
-    
-    function toggleSidebar() {
-      const sidebar1 = document.getElementById("sidebar");
-      const sidebar2 = document.getElementById("default-sidebar")
-      const main = document.querySelector("main");
-    
-      if (isSidebar1Active) {
-        sidebar1.style.display = "none";
-        sidebar2.style.display = "block";
-        main.style.marginLeft = "250px";
-      } else {
-        sidebar1.style.display = "block";
-        sidebar2.style.display = "none";
-        main.style.marginLeft = "100px";
-      }
-    
-      isSidebar1Active = !isSidebar1Active;
-    
-      // Re-render the calendar after animation
       setTimeout(() => {
-        calendar.render();
-      }, 300);
-    }
+        const menuButton = document.querySelector('.fc-menuButton-button');
+        if (menuButton) {
+          menuButton.innerHTML = `<img src="${window.menuIconPath}" alt="Menu" class="navIcon">`;
+        }
+      }, 100);
+    
+      window.calendar = calendar;
+    });
   </script>
 </body>
 </html>

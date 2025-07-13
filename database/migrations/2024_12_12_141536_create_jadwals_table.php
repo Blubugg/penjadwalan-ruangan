@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nama_kegiatan');
             $table->date('tanggal');
             $table->integer('durasi');
-            $table->time('waktu_kegiatan');
+            $table->string('waktu_kegiatan');
             $table->integer('jumlah_peserta');
             $table->string('surat_ijin')->nullable();
             $table->enum('status', ['Menunggu', 'Disetujui', 'Ditolak'])->default('Menunggu');

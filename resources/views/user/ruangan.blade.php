@@ -8,66 +8,60 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
+  <!-- Boxicons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
   <!-- Styles / Scripts -->
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   
   <title>Ruangan</title>
-  
-</head>
-<body>
-  <div id="page-content" class="flex">
-    <!-- Sidebar Opened -->
-    <x-sidebar.user.sidebar-ruangan/>
 
-    <!-- Sidebar Closed -->
-    <aside id="sidebar">
-      <div id="menu" class="flex py-[13px] items-center justify-center">
-        <button id="menuButton" onclick="toggleSidebar()">
-          <img src="{{ asset('icon/menu.svg') }}" alt="navIcon" class="w-[32px] h-[32px]">
-        </button>
-      </div>
-      <hr class="border-0 h-[1px] w-[100px] bg-white">
-      <div class="flex p-[13px] items-center justify-center">
-        <a href="/user/pesanan" class="p-[19px] border border-white rounded-lg">
-          <img src="{{ asset('icon/order.svg') }}" alt="navIcon" class="w-[32px] h-[32px]">
-        </a>
-        {{-- <div class="absolute flex text-[8px] items-center justify-center w-8 h-8 bg-red-500 text-white font-bold rounded-full top-[65px] right-[7px]">
-            <span class="text-[16px]">1</span>
-        </div> --}}
-      </div>
-    </aside>
-    
-    <!-- Main Content -->
-    <main class="flex-grow">
-      <!-- Header -->
-      <header class="bg-white border-b border-black fixed top-0 w-full z-10">
-        <div class="flex items-center justify-between py-[8px] px-[12px]">
-            <div class="flex items-center">
-                <h1 class="ml-4 text-[1.75rem] font-bold">Ruangan</h1>
-            </div>
-        </div>
-      </header>
-      
-      <!-- Room Cards -->
-      <div id="ruanganContainer" class="grid grid-cols-1 px-8 pt-[91px] pb-8 md:grid-cols-2 gap-8">
-        <!-- Existing Cards -->
-        @foreach ($ruangans as $ruangan)
-        <div class="room-card bg-white rounded-lg shadow-lg overflow-hidden relative" data-ruangan-id="{{ $ruangan->id }}">
-            <div class="h-24" style="background-color: {{ $ruangan->warna }};"></div>
-            <div class="p-4 flex flex-col h-full">
-                <div class="flex-grow">
-                    <h2 class="text-lg font-bold">{{ $ruangan->nama }}</h2>
-                    <p>Lantai {{ $ruangan->lantai }}</p>
-                    <p>Kapasitas {{ $ruangan->kapasitas }} orang</p>
-                </div>
-            </div>
-        </div>
-        @endforeach
-      </div>
-    </main>
-  </div>
+</head>
+<body class="relative min-h-screen w-full overflow-hidden">
+  <x-sidebar.user.sidebar-ruangan/>
   
-  <script src="{{ asset('js/scripts.js') }}"></script>
+  <!-- Main Content -->
+  <main class="home_content overflow-y-auto">
+    <!-- Header -->
+    <header class="bg-[#003f7d] border-b border-white fixed top-0 h-[71px] w-full z-10">
+      <div class="flex items-center justify-between py-[14px] px-[12px]">
+          <div class="flex items-center">
+            <button id="menuButton" class="bg-[#002b5c] py-[6.4px] px-[10.4px] rounded" onclick="toggleSidebar()">
+              <img src="{{ asset('icon/menu.svg') }}" alt="Menu" class="navIcon">
+            </button>
+            <h1 class="ml-3 text-[1.75rem] font-bold text-white">Ruangan</h1>
+          </div>
+      </div>
+    </header>
+    
+    <!-- Room Cards -->
+    <div id="ruanganContainer" class="grid grid-cols-1 px-8 pt-[91px] pb-8 md:grid-cols-2 gap-8">
+      <!-- Existing Cards -->
+      @foreach ($ruangans as $ruangan)
+      <div class="room-card bg-white rounded-lg shadow-lg overflow-hidden relative" data-ruangan-id="{{ $ruangan->id }}">
+          <div class="h-24" style="background-color: {{ $ruangan->warna }};"></div>
+          <div class="p-4 flex flex-col h-full">
+              <div class="flex-grow">
+                  <h2 class="text-lg font-bold">{{ $ruangan->nama }}</h2>
+                  <p>Lantai {{ $ruangan->lantai }}</p>
+                  <p>Kapasitas: {{ $ruangan->kapasitas }} orang</p>
+                  <p>Fasilitas: {{ $ruangan->fasilitas }}</p>
+              </div>
+          </div>
+      </div>
+      @endforeach
+    </div>
+  </main>
+
+  <script>
+    window.menuIconPath = "{{ asset('icon/menu.svg') }}";
+
+    let sidebar = document.querySelector(".sidebar");
+
+    function toggleSidebar() {
+      sidebar.classList.toggle("active");
+    }
+  </script>
 </body>
 </html>

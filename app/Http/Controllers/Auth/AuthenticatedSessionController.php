@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('auth.login');
+        return view('auth.login', [
+            'pageTitle' => 'Login - Penjadwalan',
+        ]);
     }
 
     /**
@@ -24,8 +27,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $user = User::where('email', $request->email)->first();
+        
+        if ($user) {
+            if (!in_array($user->status, ['Disetujui'])) {
+                if ($user->status === 'Menunggu') {
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Your account is still pending approval.',
+                    ]);
+                }
+                
+                if ($user->status === 'Ditolak') {
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Your account has been declined.',
+                    ]);
+                }
+            }
+        }
+        
         $request->authenticate();
-
         $request->session()->regenerate();
 
         // Arahkan berdasarkan role
@@ -47,6 +67,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/jadwal');
+        return redirect('/login');
     }
 }

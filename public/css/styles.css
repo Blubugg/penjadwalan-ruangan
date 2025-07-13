@@ -1,39 +1,353 @@
-aside {
-  background-color:black;
-  position: fixed;
-  height: 100vh;
-  transition: width 0.3s ease-in-out;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
-main {
-  flex-grow: 1;
-  margin-left: 100px;
-  height: 100vh;
+body {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
   overflow: hidden;
-  overflow-y: auto;
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  background-color: #ffffff;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100px;
+  background: #003f7d;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active {
+  width: 250px;
+}
+
+.sidebar .sidebar-header .logo .logo_name {
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active .sidebar-header .logo .logo_name {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.sidebar ul li a {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  height: 60px;
+  width: 100%;
+  transition: all 0.5s ease;
+}
+
+.sidebar .sidebar.active ul li i {
+  display: flex;
+  height: 24px;
+  width: 24px;
+  font-size: 24px;
+  border-radius: 12px;
+  text-align: center;
+  justify-content: center;
+}
+
+.sidebar .user {
+  opacity: 0;
+  pointer-events: auto;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active .user {
+  opacity: 1;
+  pointer-events: auto;
+  font-size: 14px;
+  max-width: 100px;
+}
+
+.sidebar .links_name {
+  opacity: 0;
+  pointer-events: auto;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active .links_name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 166px;
+  white-space: nowrap;
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.5s ease;
+}
+
+.home_content {
+  position: absolute;
+  height: 100%;
+  width: calc(100% - 100px);
+  left: 100px;
+  transition: all 0.5s ease;
+}
+
+.sidebar.active ~ .home_content {
+  width: calc(100% - 250px);
+  left: 250px;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+
+@media screen and (max-width: 991px) {
+  .sidebar-offcanvas {
+    position: fixed;
+    bottom: 0;
+    left: -250px;
+    transition: all 0.44s ease;
+  }
+
+  .sidebar-offcanvas.active {
+    left: 0;
+  }
+  
+  .home_content {
+    left: 0;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 911px) {
+  .sidebar.active {
+    width: 200px;
+  }
+  
+  .sidebar.active ~ .home_content {
+    left: 200px;
+    width: calc(100% - 200px);
+    transition: all 0.4s ease;
+  }
+
+  .sidebar .list-side {
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 851px) {
+  .sidebar.active ~ .home_content .fc-button {
+    font-size: 14px !important;
+  }
+
+  .sidebar.active ~ .home_content .fc-toolbar-title {
+    font-size: 26px !important;
+  }
+
+  .sidebar.active ~ .home_content .navIcon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+@media screen and (max-width: 791px) {
+  .sidebar.active ~ .home_content .fc-button {
+    font-size: 12px !important;
+  }
+
+  .sidebar.active ~ .home_content .fc-toolbar-title {
+    font-size: 24px !important;
+  }
+  
+  .sidebar.active ~ .home_content .navIcon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+@media screen and (max-width: 721px) {
+  .sidebar.active ~ .home_content .fc-button {
+    font-size: 10px !important;
+  }
+
+  .sidebar.active ~ .home_content .fc-toolbar-title {
+    font-size: 22px !important;
+  }
+  
+  .sidebar.active ~ .home_content .navIcon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+@media screen and (max-width: 651px) {
+  .sidebar.active ~ .home_content .fc-button {
+    font-size: 8px !important;
+  }
+
+  .sidebar.active ~ .home_content .fc-toolbar-title {
+    font-size: 20px !important;
+  }
+  
+  .sidebar.active ~ .home_content .navIcon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+@media screen and (max-width: 591px) {
+  .sidebar.active ~ .home_content .fc-button {
+    font-size: 6px !important;
+  }
+
+  .sidebar.active ~ .home_content .fc-toolbar-title {
+    font-size: 18px !important;
+  }
+  
+  .sidebar.active ~ .home_content .navIcon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+@media screen and (max-width: 571px) {
+  .sidebar.active ~ .home_content .fc-button {
+    font-size: 4px !important;
+  }
+  
+  .sidebar.active ~ .home_content .fc-toolbar-title {
+    font-size: 16px !important;
+  }
+
+  .sidebar.active ~ .home_content .navIcon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+@media screen and (max-width: 661px) {
+  .fc-button {
+    font-size: 14px !important;
+  }
+
+  .fc-toolbar-title {
+    font-size: 26px !important;
+  }
+
+  .navIcon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+@media screen and (max-width: 591px) {
+  .fc-button {
+    font-size: 12px !important;
+  }
+
+  .fc-toolbar-title {
+    font-size: 24px !important;
+  }
+  
+  .navIcon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+@media screen and (max-width: 531px) {
+  .fc-button {
+    font-size: 10px !important;
+  }
+
+  .fc-toolbar-title {
+    font-size: 22px !important;
+  }
+  
+  .navIcon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+@media screen and (max-width: 461px) {
+  .fc-button {
+    font-size: 8px !important;
+  }
+  
+  .fc-toolbar-title {
+    font-size: 20px !important;
+  }
+
+  .navIcon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+.navIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.fc-menuButton-button {
+  background-color: #002b5c !important;
+  border-color: #002b5c !important;
 }
 
 .fc .fc-toolbar.fc-header-toolbar {
-  margin: 8px 12px;
+  padding: 14px 12px;
+  height: 70px;
+  background-color: #003f7d;
+  margin-bottom: 0px;
 }
 
 .fc .fc-toolbar-title {
   font-weight: bold;
+  color: white;
 }
 
 .fc .fc-button-primary {
-  background-color: black;
-  border-color: white;
+  color: #003f7d !important;
+  background-color: #eab308;
+  border-color: #003f7d;
+  --fc-button-hover-bg-color: #facc15;
 }
 
 .fc .fc-button-primary:disabled {
-  background-color: black;
-  border-color: white;
+  background-color: #facc15;
+  border-color: #003f7d;
 }
 
 .fc .fc-daygrid-day-top {
   justify-content: center;
+}
+
+/* Full width events for dayGridMonth */
+.fc .fc-daygrid-event {
+  display: block !important;
+  width: 100% !important;
+}
+
+.fc-event-custom {
+  padding: 6px;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Style for timeGrid events */
+.fc-timegrid-event .fc-event-main {
+  padding: 4px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: white;
 }
 
 .shadow-side {
@@ -42,22 +356,159 @@ main {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-/* Tambahkan transisi untuk animasi yang halus */
-#page-content {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+.time-slot {
+  cursor: pointer;
+}
+.time-slot.selected {
+  background-color: #3f83f8;
+  color: white;
 }
 
-#sidebar {
-  display: block;
-  width: 100px;
-  z-index: 1;
+.page_content {
+  position: absolute;
+  height: 100%;
+  width: calc(100% - 350px);
+  left: 350px;
 }
 
-#default-sidebar {
-  width: 250px;
-  z-index: 11;
-  display: none;
+.form-jadwal {
+  width: 350px; 
+  padding: 10px;
+  height: 100vh; 
+  background-color: white;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .form-jadwal {
+    width: 300px;
+    font-size: 12px;
+  }
+
+  .form-jadwal label,
+  .form-jadwal input,
+  .form-jadwal select,
+  .form-jadwal button,
+  .form-jadwal p {
+    font-size: 12px;
+  }
+
+  .icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .timeSlots,
+  .roomSlots {
+    grid-template-columns: 1fr !important; /* Buat jadi 1 kolom */
+  }
+
+  .form-jadwal ~ .page_content {
+    left: 300px;
+    width: calc(100% - 300px);
+  }
+
+  .form-jadwal ~ .page_content .fc-button {
+    font-size: 12px;
+  }
+
+  .form-jadwal ~ .page_content .fc-toolbar-title {
+    font-size: 24px;
+  }
+
+  .form-jadwal ~ .page_content .fc table {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 426px) {
+  .form-jadwal {
+    display: none;
+  }
+
+  .page_content {
+    position: static !important;
+    width: 100% !important;
+    height: 50vh !important; 
+  }
+
+  .form-jadwal ~ .page_content .fc-button {
+    font-size: 10px !important;
+  }
+
+  .form-jadwal ~ .page_content .fc-toolbar-title {
+    font-size: 20px !important;
+  }
+
+  .form-jadwal ~ .page_content .fc table {
+    font-size: 10px !important;
+  }
+
+  /* body {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  .form-jadwal {
+    width: 100% !important;
+    height: 50vh !important; 
+    overflow-y: auto !important;
+    border-radius: 0 !important;
+    font-size: 10px;
+    padding: 10px !important;
+  }
+
+  .form-jadwal label,
+  .form-jadwal input,
+  .form-jadwal select,
+  .form-jadwal button,
+  .form-jadwal p {
+    font-size: 10px !important;
+  }
+
+  .form-jadwal input,
+  .form-jadwal select,
+  .form-jadwal button {
+    width: 100% !important;
+  }
+
+  .icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .page_content {
+    position: static !important;
+    width: 100% !important;
+    height: 50vh !important; 
+  }
+
+  #calendar {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  #timeSlots,
+  #roomSlots {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important; 
+    gap: 4px !important;
+  }
+
+  .form-jadwal ~ .page_content .fc-button {
+    font-size: 10px !important;
+  }
+
+  .form-jadwal ~ .page_content .fc-toolbar-title {
+    font-size: 20px !important;
+  }
+
+  .form-jadwal ~ .page_content .fc table {
+    font-size: 10px !important;
+  } */
 }

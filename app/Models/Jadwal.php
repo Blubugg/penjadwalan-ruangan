@@ -14,11 +14,10 @@ class Jadwal extends Model
     'ruangan_id', 
     'nama_kegiatan', 
     'tanggal', 
-    'durasi', 
     'waktu_kegiatan', 
     'jumlah_peserta',
-     'surat_ijin', 
-     'status'];
+    'surat_ijin', 
+    'status'];
 
     public function user()
     {
